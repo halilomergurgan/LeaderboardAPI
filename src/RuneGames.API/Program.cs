@@ -6,6 +6,7 @@ using RuneGames.Application.Features.Auth.Commands;
 using RuneGames.Application.Features.Leaderboard.Commands;
 using RuneGames.Application.Features.Leaderboard.Queries;
 using RuneGames.Infrastructure;
+using RuneGames.Infrastructure.Persistence.Seeders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddScoped<LoginHandler>();
 builder.Services.AddScoped<SubmitScoreHandler>();
 builder.Services.AddScoped<GetTopPlayersHandler>();
 builder.Services.AddScoped<GetPlayerRankHandler>();
+
+builder.Services.AddHostedService<DatabaseSeeder>();
 
 var jwtSecret = builder.Configuration["Jwt:Secret"]!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
