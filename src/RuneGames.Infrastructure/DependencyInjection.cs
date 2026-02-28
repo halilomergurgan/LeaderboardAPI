@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddScoped<ILeaderboardRepository, LeaderboardRepository>();
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<ILeaderboardCacheService, LeaderboardCacheService>();
+        services.AddScoped<IIdempotencyService, IdempotencyService>();
 
         services.AddStackExchangeRedisCache(options =>
             options.Configuration = configuration.GetConnectionString("Redis"));

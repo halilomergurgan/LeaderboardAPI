@@ -12,21 +12,27 @@ public class SubmitScoreHandler
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILeaderboardCacheService _cache;
+    private readonly IIdempotencyService _idempotency;
 
     public SubmitScoreHandler(
         ILeaderboardRepository leaderboardRepository,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork,
-        ILeaderboardCacheService cache)
+        ILeaderboardCacheService cache,
+        IIdempotencyService idempotency)
     {
         _leaderboardRepository = leaderboardRepository;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _cache = cache;
+        _idempotency = idempotency;
     }
 
     public async Task<Result<bool>> HandleAsync(SubmitScoreCommand command, CancellationToken ct = default)
     {
+        if (await _idempotency.HasBeenProcessedAsync(command.IdempotencyKey, ct))
+            throw new ValidationException("IdempotencyKey", "This request has already been processed.");
+
         if (command.Score < 0)
             throw new ValidationException("Score", "Score cannot be negative.");
 
@@ -51,6 +57,7 @@ public class SubmitScoreHandler
         }
 
         await _unitOfWork.SaveChangesAsync(ct);
+        await _idempotency.MarkAsProcessedAsync(command.IdempotencyKey, ct);
         await _cache.InvalidateAsync(ct);
 
         return Result<bool>.Success(true);

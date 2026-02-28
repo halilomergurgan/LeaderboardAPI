@@ -29,20 +29,28 @@ public class LeaderboardRepository : ILeaderboardRepository
         => await _context.LeaderboardEntries
             .Include(l => l.User)
             .OrderByDescending(l => l.Score)
+            .ThenBy(l => l.User.RegistrationDate)
+            .ThenByDescending(l => l.PlayerLevel)
+            .ThenByDescending(l => l.TrophyCount)
             .Take(count)
             .ToListAsync(ct);
 
     public async Task<int> GetUserRankAsync(Guid userId, CancellationToken ct = default)
     {
-        var userScore = await _context.LeaderboardEntries
-            .Where(l => l.UserId == userId)
-            .Select(l => l.Score)
-            .FirstOrDefaultAsync(ct);
+        var userEntry = await _context.LeaderboardEntries
+            .Include(l => l.User)
+            .FirstOrDefaultAsync(l => l.UserId == userId, ct);
 
-        if (userScore == 0) return 0;
+        if (userEntry is null) return 0;
 
         var rank = await _context.LeaderboardEntries
-            .CountAsync(l => l.Score > userScore, ct);
+            .Include(l => l.User)
+            .CountAsync(l =>
+                l.Score > userEntry.Score ||
+                (l.Score == userEntry.Score && l.User.RegistrationDate < userEntry.User.RegistrationDate) ||
+                (l.Score == userEntry.Score && l.User.RegistrationDate == userEntry.User.RegistrationDate && l.PlayerLevel > userEntry.PlayerLevel) ||
+                (l.Score == userEntry.Score && l.User.RegistrationDate == userEntry.User.RegistrationDate && l.PlayerLevel == userEntry.PlayerLevel && l.TrophyCount > userEntry.TrophyCount),
+            ct);
 
         return rank + 1;
     }
@@ -55,6 +63,9 @@ public class LeaderboardRepository : ILeaderboardRepository
         return await _context.LeaderboardEntries
             .Include(l => l.User)
             .OrderByDescending(l => l.Score)
+            .ThenBy(l => l.User.RegistrationDate)
+            .ThenByDescending(l => l.PlayerLevel)
+            .ThenByDescending(l => l.TrophyCount)
             .Skip(Math.Max(0, rank - range - 1))
             .Take(range * 2 + 1)
             .ToListAsync(ct);
