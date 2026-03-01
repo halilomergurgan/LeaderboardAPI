@@ -129,7 +129,7 @@ Yeni kullanıcı kaydı oluşturur.
 **Request Body:**
 
     {
-      "username": "player1",
+      "username": "player",
       "password": "Sifre123!",
       "deviceId": "device-uuid-buraya"
     }
@@ -149,7 +149,7 @@ Kullanıcı girişi yapar, JWT token döndürür.
 **Request Body:**
 
     {
-      "username": "player1",
+      "username": "player",
       "password": "Sifre123!"
     }
 
