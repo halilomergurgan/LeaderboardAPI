@@ -26,14 +26,18 @@ public class GetPlayerRankHandler
 
         var surrounding = await _leaderboardRepository.GetSurroundingEntriesAsync(query.UserId, query.SurroundingRange, ct);
 
-        var result = new List<RankEntry>();
-        foreach (var entry in surrounding)
-        {
-            var user = await _userRepository.GetByIdAsync(entry.UserId, ct);
-            var entryRank = await _leaderboardRepository.GetUserRankAsync(entry.UserId, ct);
-            result.Add(new RankEntry(entry.UserId, user?.Username ?? "Unknown", entry.Score, entryRank));
-        }
+        var startRank = Math.Max(1, rank - query.SurroundingRange);
+
+        var result = surrounding
+            .Select((entry, index) => new RankEntry(
+                entry.UserId,
+                entry.User?.Username ?? "Unknown",
+                entry.Score,
+                startRank + index
+            ))
+            .ToList();
 
         return Result<PlayerRankResult>.Success(new PlayerRankResult(rank, result));
     }
+
 }

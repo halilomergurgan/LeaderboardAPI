@@ -1,6 +1,5 @@
 using RuneGames.Application.Common.Interfaces;
 using RuneGames.Application.Common.Models;
-using RuneGames.Domain.Entities;
 using RuneGames.Domain.Interfaces;
 
 namespace RuneGames.Application.Features.Leaderboard.Queries;
@@ -16,15 +15,27 @@ public class GetTopPlayersHandler
         _cache = cache;
     }
 
-    public async Task<Result<List<LeaderboardEntry>>> HandleAsync(GetTopPlayersQuery query, CancellationToken ct = default)
+    public async Task<Result<List<LeaderboardEntryCache>>> HandleAsync(GetTopPlayersQuery query, CancellationToken ct = default)
     {
         var cached = await _cache.GetTopAsync(ct);
-        if (cached is not null)
-            return Result<List<LeaderboardEntry>>.Success(cached);
+
+        if (cached is not null && cached.Count >= query.Count)
+            return Result<List<LeaderboardEntryCache>>.Success(cached.Take(query.Count).ToList());
 
         var entries = await _leaderboardRepository.GetTopNAsync(query.Count, ct);
-        await _cache.SetTopAsync(entries, ct);
 
-        return Result<List<LeaderboardEntry>>.Success(entries);
+        var cacheDtos = entries.Select(e => new LeaderboardEntryCache(
+            e.Id,
+            e.UserId,
+            e.User.Username,
+            e.Score,
+            e.PlayerLevel,
+            e.TrophyCount,
+            e.LastUpdated
+        )).ToList();
+
+        await _cache.SetTopAsync(cacheDtos, ct);
+
+        return Result<List<LeaderboardEntryCache>>.Success(cacheDtos.Take(query.Count).ToList());
     }
 }

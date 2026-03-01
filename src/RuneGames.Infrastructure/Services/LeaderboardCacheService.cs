@@ -1,7 +1,6 @@
 using System.Text.Json;
 using Microsoft.Extensions.Caching.Distributed;
 using RuneGames.Application.Common.Interfaces;
-using RuneGames.Domain.Entities;
 
 namespace RuneGames.Infrastructure.Services;
 
@@ -11,22 +10,23 @@ public class LeaderboardCacheService : ILeaderboardCacheService
     private const string CacheKey = "leaderboard:top";
     private static readonly TimeSpan CacheDuration = TimeSpan.FromMinutes(5);
 
-    public LeaderboardCacheService(IDistributedCache cache)
+    private static readonly JsonSerializerOptions _jsonOptions = new()
     {
-        _cache = cache;
-    }
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
-    public async Task<List<LeaderboardEntry>?> GetTopAsync(CancellationToken ct = default)
+    public LeaderboardCacheService(IDistributedCache cache) => _cache = cache;
+
+    public async Task<List<LeaderboardEntryCache>?> GetTopAsync(CancellationToken ct = default)
     {
         var json = await _cache.GetStringAsync(CacheKey, ct);
         if (json is null) return null;
-
-        return JsonSerializer.Deserialize<List<LeaderboardEntry>>(json);
+        return JsonSerializer.Deserialize<List<LeaderboardEntryCache>>(json, _jsonOptions);
     }
 
-    public async Task SetTopAsync(List<LeaderboardEntry> entries, CancellationToken ct = default)
+    public async Task SetTopAsync(List<LeaderboardEntryCache> entries, CancellationToken ct = default)
     {
-        var json = JsonSerializer.Serialize(entries);
+        var json = JsonSerializer.Serialize(entries, _jsonOptions);
         await _cache.SetStringAsync(CacheKey, json, new DistributedCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = CacheDuration

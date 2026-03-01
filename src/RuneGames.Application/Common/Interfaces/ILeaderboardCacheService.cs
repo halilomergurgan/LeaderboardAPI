@@ -1,10 +1,18 @@
-using RuneGames.Domain.Entities;
-
 namespace RuneGames.Application.Common.Interfaces;
+
+public record LeaderboardEntryCache(
+    Guid Id,
+    Guid UserId,
+    string Username,
+    long Score,
+    int PlayerLevel,
+    int TrophyCount,
+    DateTime LastUpdated
+);
 
 public interface ILeaderboardCacheService
 {
-    Task<List<LeaderboardEntry>?> GetTopAsync(CancellationToken ct = default);
-    Task SetTopAsync(List<LeaderboardEntry> entries, CancellationToken ct = default);
+    Task<List<LeaderboardEntryCache>?> GetTopAsync(CancellationToken ct = default);
+    Task SetTopAsync(List<LeaderboardEntryCache> entries, CancellationToken ct = default);
     Task InvalidateAsync(CancellationToken ct = default);
 }

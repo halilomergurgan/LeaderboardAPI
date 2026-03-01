@@ -6,6 +6,7 @@ using RuneGames.Domain.Interfaces;
 using RuneGames.Infrastructure.Persistence;
 using RuneGames.Infrastructure.Persistence.Repositories;
 using RuneGames.Infrastructure.Services;
+using RuneGames.Infrastructure.Messaging;
 
 namespace RuneGames.Infrastructure;
 
@@ -24,6 +25,8 @@ public static class DependencyInjection
         services.AddScoped<IJwtService, JwtService>();
         services.AddScoped<ILeaderboardCacheService, LeaderboardCacheService>();
         services.AddScoped<IIdempotencyService, IdempotencyService>();
+        services.AddSingleton<IMessagePublisher, RabbitMqPublisher>();
+        services.AddHostedService<ScoreConsumer>();
 
         services.AddStackExchangeRedisCache(options =>
             options.Configuration = configuration.GetConnectionString("Redis"));

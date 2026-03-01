@@ -10,7 +10,7 @@ public class LeaderboardEntry
     public DateTime LastUpdated { get; private set; }
     public User User { get; private set; } = null!;
 
-    private LeaderboardEntry() { } 
+    private LeaderboardEntry() { }
 
     public static LeaderboardEntry Create(Guid userId, long score, int playerLevel, int trophyCount)
     {
@@ -27,7 +27,9 @@ public class LeaderboardEntry
 
     public void UpdateScore(long newScore, int playerLevel, int trophyCount)
     {
-        Score = newScore;
+        if (newScore > Score)
+            Score = newScore;
+
         PlayerLevel = playerLevel;
         TrophyCount = trophyCount;
         LastUpdated = DateTime.UtcNow;
