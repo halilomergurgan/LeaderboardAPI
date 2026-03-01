@@ -234,7 +234,7 @@ En yüksek skorlu N oyuncuyu döndürür. ?count değeri gönderilmediği taktir
 
 ---
 
-#### `GET /api/leaderboard/rank{uuid}`
+#### `GET /api/leaderboard/rank`
 
 Giriş yapmış kullanıcının sıralamasını ve etrafındaki oyuncuları döndürür.
 
@@ -251,7 +251,7 @@ Giriş yapmış kullanıcının sıralamasını ve etrafındaki oyuncuları dön
       "surrounding": [
         { "userId": "uuid", "username": "player44", "score": 4200, "rank": 44 },
         { "userId": "uuid", "username": "player45", "score": 4100, "rank": 45 },
-        { "userId": "uuid", "username": "me", "score": 4050, "rank": 47 },
+        { "userId": "uuid", "username": "player46", "score": 4050, "rank": 47 },
         { "userId": "uuid", "username": "player48", "score": 3900, "rank": 48 },
         { "userId": "uuid", "username": "player49", "score": 3800, "rank": 49 }
       ]

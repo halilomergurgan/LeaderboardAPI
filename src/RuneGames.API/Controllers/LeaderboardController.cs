@@ -39,9 +39,13 @@ public class LeaderboardController : ControllerBase
         return Ok(result.Data);
     }
 
-    [HttpGet("rank/{userId:guid}")]
-    public async Task<IActionResult> GetPlayerRank(Guid userId, [FromQuery] int surroundingRange = 5, CancellationToken ct = default)
+    [HttpGet("rank")]
+    public async Task<IActionResult> GetPlayerRank([FromQuery] int surroundingRange = 5, CancellationToken ct = default)
     {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (!Guid.TryParse(userIdClaim, out var userId))
+            return Unauthorized();
+
         try
         {
             var result = await _getPlayerRankHandler.HandleAsync(new GetPlayerRankQuery(userId, surroundingRange), ct);

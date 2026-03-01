@@ -31,7 +31,7 @@ public class GetTopPlayersHandler
             e.Score,
             e.PlayerLevel,
             e.TrophyCount,
-            e.LastUpdated,
+            e.LastUpdated.ToString("yyyy-MM-dd HH:mm:ss"),
             index + 1
         )).ToList();
 

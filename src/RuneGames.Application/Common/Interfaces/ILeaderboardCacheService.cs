@@ -7,7 +7,7 @@ public record LeaderboardEntryCache(
     long Score,
     int PlayerLevel,
     int TrophyCount,
-    DateTime LastUpdated,
+    string LastUpdated,
     int Rank
 );
 
