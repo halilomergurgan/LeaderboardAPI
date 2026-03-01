@@ -301,10 +301,10 @@ Bir oyuncunun sırası, kendisinden daha iyi konumda olan oyuncu sayısı + 1 ol
 Sıralama sorgularının performanslı çalışması için aşağıdaki index stratejisi uygulanmıştır:
 
     -- Skor bazlı sıralama için
-    CREATE INDEX idx_leaderboard_score ON leaderboard_entries (score DESC);
+    CREATE INDEX IX_leaderboard_entries_score ON leaderboard_entries (score DESC);
 
     -- Kullanıcı bazlı hızlı erişim için
-    CREATE INDEX idx_leaderboard_userid ON leaderboard_entries (user_id);
+    CREATE INDEX IX_leaderboard_entries_user_id ON leaderboard_entries (user_id);
 
 ### Idempotency
 

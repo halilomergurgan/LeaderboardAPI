@@ -7,7 +7,8 @@ public record LeaderboardEntryCache(
     long Score,
     int PlayerLevel,
     int TrophyCount,
-    DateTime LastUpdated
+    DateTime LastUpdated,
+    int Rank
 );
 
 public interface ILeaderboardCacheService

@@ -24,14 +24,15 @@ public class GetTopPlayersHandler
 
         var entries = await _leaderboardRepository.GetTopNAsync(query.Count, ct);
 
-        var cacheDtos = entries.Select(e => new LeaderboardEntryCache(
+        var cacheDtos = entries.Select((e, index) => new LeaderboardEntryCache(
             e.Id,
             e.UserId,
             e.User.Username,
             e.Score,
             e.PlayerLevel,
             e.TrophyCount,
-            e.LastUpdated
+            e.LastUpdated,
+            index + 1
         )).ToList();
 
         await _cache.SetTopAsync(cacheDtos, ct);
