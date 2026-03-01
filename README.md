@@ -46,7 +46,7 @@ Her katman yalnızca bir iç katmanı tanır. Infrastructure, Domain ve Applicat
 | Entity Framework Core | ORM ve migration yönetimi |
 | JWT Bearer | Kimlik doğrulama |
 | Docker / Docker Compose | Migration ve Seeder |
-| Swagger / OpenAPI | API dokümantasyonu |
+| Swagger | API dokümantasyonu |
 
 ---
 
@@ -80,8 +80,15 @@ Açın ve şu alanları doldurun:
 
     {
       "ConnectionStrings": {
-        "DefaultConnection": "Host=postgres;Port=5432;Database=runegames_db;Username=runegames;Password=runegames123",
+        "DefaultConnection": "Host=ostgre;Port=5432;Database=YOUR_DB;Username=YOUR_USER;Password=YOUR_PASSWORD",
         "Redis": "redis:6379"
+      },
+      "RabbitMq": {
+        "Host": "rabbitmq",
+        "Port": 5672,
+        "Username": "runegames",
+        "Password": "runegames123",
+        "QueueName": "score.submitted"
       },
       "Jwt": {
         "Secret": "en-az-32-karakterden-olusan-gizli-anahtar",
@@ -106,24 +113,6 @@ Açın ve şu alanları doldurun:
 | API | http://localhost:5000 |
 | Swagger UI | http://localhost:5000/swagger |
 | RabbitMQ Yönetim Paneli | http://localhost:15672 (runegames / runegames123) |
-
----
-
-## Ortam Değişkenleri
-
-`appsettings.Example.json` şablonu olarak sunulmuştur.
-
-    {
-      "ConnectionStrings": {
-        "DefaultConnection": "Host=localhost;Port=5432;Database=YOUR_DB;Username=YOUR_USER;Password=YOUR_PASSWORD",
-        "Redis": "localhost:6379"
-      },
-      "Jwt": {
-        "Secret": "YOUR_SECRET_KEY_MIN_32_CHARS",
-        "Issuer": "RuneGames",
-        "Audience": "RuneGamesClient"
-      }
-    }
 
 ---
 
@@ -210,6 +199,7 @@ Maç sonucunu gönderir, skoru günceller.
 #### `GET /api/leaderboard/top?count=10`
 
 En yüksek skorlu N oyuncuyu döndürür. ?count değeri gönderilmediği taktirde 100 kayıt döndürür
+?count={count} parametresi opsiyoneldir.
 
 **Query Parameters:**
 
@@ -276,9 +266,9 @@ Sıralama tamamen sunucu tarafında hesaplanır, client'tan gelen veriye doğrud
 
 | Oyuncu | Skor | Kayıt Tarihi | Seviye | Kupa | Sıra |
 |---|---|---|---|---|---|
-| Ali | 5000 | 2024-01-01 | 30 | 500 | 1 |
-| Veli | 5000 | 2024-01-03 | 30 | 500 | 2 |
-| Ayşe | 5000 | 2024-01-03 | 28 | 500 | 3 |
+| Ali | 5000 | 2025-01-01 | 30 | 500 | 1 |
+| Veli | 5000 | 2025-01-03 | 30 | 500 | 2 |
+| Ayşe | 5000 | 2025-01-03 | 28 | 500 | 3 |
 
 Ali ve Veli aynı skorda ama Ali daha önce kayıt olduğu için birinci.
 
@@ -326,8 +316,8 @@ Her `score` isteği benzersiz bir `Idempotency-Key` header'ı taşır. Aynı key
 
 Tüm endpointleri hazır ortam değişkenleriyle test etmek için Postman collection'ını içe aktarabilirsiniz:
 
-**[Postman Collection Linki →](#)**
-*(Linki buraya ekleyin)*
+**[Postman Collection →](#)**
+*(mail olarak gönderilmiştir*
 
 Collection içinde:
 - Register ve Login akışı
