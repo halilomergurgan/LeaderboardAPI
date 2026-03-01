@@ -317,7 +317,7 @@ Her `score` isteği benzersiz bir `Idempotency-Key` header'ı taşır. Aynı key
 Tüm endpointleri hazır ortam değişkenleriyle test etmek için Postman collection'ını içe aktarabilirsiniz:
 
 **[Postman Collection →](#)**
-*(mail olarak gönderilmiştir*
+*(mail olarak gönderilmiştir)*
 
 Collection içinde:
 - Register ve Login akışı
